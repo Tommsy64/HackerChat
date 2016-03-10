@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.github.tommsy64</groupId>
-	<artifactId>netchat</artifactId>
+	<artifactId>hackerchat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Netchat</name>
-	<url>https://github.com/Tommsy64/netchat</url>
+	<url>https://github.com/Tommsy64/hackerch</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,7 +33,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>${project.groupId}.netchat.Netchat</mainClass>
+							<mainClass>${project.groupId}.hackerchat.Hackerchat</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -53,23 +53,23 @@
 							<relocations>
 								<relocation>
 									<pattern>com.google.common</pattern>
-									<shadedPattern>${project.groupId}.netchat.common</shadedPattern>
+									<shadedPattern>${project.groupId}.hackerchat.common</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>com.esotericsoftware</pattern>
-									<shadedPattern>${project.groupId}.netchat.esotericsoftware</shadedPattern>
+									<shadedPattern>${project.groupId}.hackerchat.esotericsoftware</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>com.beust.jcommander</pattern>
-									<shadedPattern>${project.groupId}.netchat.jcommander</shadedPattern>
+									<shadedPattern>${project.groupId}.hackerchat.jcommander</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>org.objectweb</pattern>
-									<shadedPattern>${project.groupId}.netchat.objectweb</shadedPattern>
+									<shadedPattern>${project.groupId}.hackerchat.objectweb</shadedPattern>
 								</relocation>
 								<relocation>
 									<pattern>org.objenesis</pattern>
-									<shadedPattern>${project.groupId}.netchat.objenesis</shadedPattern>
+									<shadedPattern>${project.groupId}.hackerchat.objenesis</shadedPattern>
 								</relocation>
 							</relocations>
 							<filters>
@@ -104,11 +104,6 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware</groupId>
-			<artifactId>kryo</artifactId>
-			<version>3.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.beust</groupId>

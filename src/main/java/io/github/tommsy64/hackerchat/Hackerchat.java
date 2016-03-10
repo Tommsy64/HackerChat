@@ -1,16 +1,16 @@
-package io.github.tommsy64.netchat;
+package io.github.tommsy64.hackerchat;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 import com.beust.jcommander.JCommander;
 
-import io.github.tommsy64.netchat.arguments.ClientArguments;
-import io.github.tommsy64.netchat.arguments.NetchatArguments;
-import io.github.tommsy64.netchat.arguments.ServerArguments;
+import io.github.tommsy64.hackerchat.arguments.ClientArguments;
+import io.github.tommsy64.hackerchat.arguments.NetchatArguments;
+import io.github.tommsy64.hackerchat.arguments.ServerArguments;
 import lombok.Cleanup;
 
-public class Netchat {
+public class Hackerchat {
     public static void main(String[] args) {
         NetchatArguments mainArgs = new NetchatArguments();
         ClientArguments clientArgs = new ClientArguments();
@@ -23,7 +23,7 @@ public class Netchat {
             if (mainArgs.isHelp() || args.length == 0)
                 jc.usage();
             else if (mainArgs.isVersion())
-                System.out.println("Netchat by version ${ project.version } Tommsy64");
+                System.out.println("Hackerchat by version ${ project.version } Tommsy64");
             return;
         }
 

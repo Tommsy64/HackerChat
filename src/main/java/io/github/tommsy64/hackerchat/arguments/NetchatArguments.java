@@ -1,4 +1,4 @@
-package io.github.tommsy64.netchat.arguments;
+package io.github.tommsy64.hackerchat.arguments;
 
 import com.beust.jcommander.Parameter;
 
