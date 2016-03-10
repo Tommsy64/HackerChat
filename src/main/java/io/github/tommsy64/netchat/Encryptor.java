@@ -1,4 +1,4 @@
-package io.github.tommsy64.netchat.user;
+package io.github.tommsy64.netchat;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -22,6 +22,8 @@ import com.google.common.primitives.Bytes;
 public class Encryptor {
     public static String encrypt(String key, String value) throws NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, InvalidKeyException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        if (value == null || value.isEmpty())
+            return value;
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
 
         // setup an IV (initialization vector) that should be
@@ -40,6 +42,8 @@ public class Encryptor {
 
     public static String decrypt(String key, String encryptedStr) throws NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, InvalidKeyException,
             InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+        if (encryptedStr == null || encryptedStr.isEmpty())
+            return encryptedStr;
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
 
         byte[] encrypted = Base64.getDecoder().decode(encryptedStr);

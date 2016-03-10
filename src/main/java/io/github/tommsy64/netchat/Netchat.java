@@ -1,88 +1,86 @@
 package io.github.tommsy64.netchat;
 
 import java.io.IOException;
-import java.net.NoRouteToHostException;
-import java.net.Socket;
 import java.util.Scanner;
 
-import io.github.tommsy64.netchat.client.Client;
-import io.github.tommsy64.netchat.server.Server;
-import io.github.tommsy64.netchat.user.EncryptedUser;
+import com.beust.jcommander.JCommander;
+
+import io.github.tommsy64.netchat.arguments.ClientArguments;
+import io.github.tommsy64.netchat.arguments.NetchatArguments;
+import io.github.tommsy64.netchat.arguments.ServerArguments;
 import lombok.Cleanup;
 
 public class Netchat {
     public static void main(String[] args) {
-        
-        
-        
-        
-        runServer();
-        System.exit(0);
-        if (args.length == 0) {
-            runClient();
-        } else if (args[0].toLowerCase().startsWith("s")) {
-            runServer();
+        NetchatArguments mainArgs = new NetchatArguments();
+        ClientArguments clientArgs = new ClientArguments();
+        ServerArguments serverArgs = new ServerArguments();
+        JCommander jc = new JCommander(mainArgs);
+        jc.addCommand("server", serverArgs, "serve", "s");
+        jc.addCommand("client", clientArgs, "connect", "join", "c");
+        jc.parse(args);
+        if (jc.getParsedCommand() == null) {
+            if (mainArgs.isHelp() || args.length == 0)
+                jc.usage();
+            else if (mainArgs.isVersion())
+                System.out.println("Netchat by version ${ project.version } Tommsy64");
+            return;
         }
-    }
 
-    private static void runServer() {
-        System.out.println("*** Netchat Server ***");
-        @Cleanup
-        Scanner in = new Scanner(System.in);
-
-        System.out.print("Port: ");
-        short port = 8888;
-        try {
-            port = Short.parseShort(in.nextLine());
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid port!");
-            System.exit(1);
-        }
-        System.out.print("Key: ");
-        String key = in.nextLine();
-        try {
-            Server server = new Server(port, key);
-            System.out.println("Starting server...");
-            server.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    private static void runClient() {
-        System.out.println("*** Netchat Client ***");
-        @Cleanup
-        Scanner in = new Scanner(System.in);
-
-        System.out.print("Host: ");
-        String host = in.nextLine();
-        System.out.print("Port: ");
-        short port = 8888;
-        try {
-            port = Short.parseShort(in.nextLine());
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid port!");
-            System.exit(1);
-        }
-        System.out.print("Key: ");
-        String key = in.nextLine();
-        try {
-            System.out.println("Attempting to connect...");
-            Socket socket = null;
-            try {
-                socket = new Socket(host, port);
-            } catch (NoRouteToHostException e) {
-                System.err.println("Connection failed: " + e.getLocalizedMessage());
-                System.exit(1);
+        if (jc.getParsedCommand().equalsIgnoreCase("client")) {
+            if (clientArgs.isHelp()) {
+                jc.usage("client");
+                return;
             }
-
-            System.out.println("Connection succesful!");
-            Client client = new Client(new EncryptedUser(socket, key));
-            client.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+            Client client = null;
+            try {
+                client = new Client(clientArgs);
+                client.start();
+            } catch (IOException e) {
+                System.err.print("Error creating client: " + e.getLocalizedMessage());
+            }
+        } else if (jc.getParsedCommand().equalsIgnoreCase("server")) {
+            if (serverArgs.isHelp()) {
+                jc.usage("server");
+                return;
+            }
+            Server server = null;
+            try {
+                server = new Server(serverArgs);
+                System.out.println("Listening on " + serverArgs.getPort());
+                server(server);
+            } catch (IOException e) {
+                System.err.print("Error creating server: " + e.getLocalizedMessage());
+            }
         }
+    }
+
+    private static void server(final Server server) {
+        server.setName("server");
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                tryClose(server);
+            }
+        });
+        server.start();
+        System.out.println("Message processing server started!");
+        @Cleanup
+        Scanner in = new Scanner(System.in);
+        String input;
+        do
+            input = in.nextLine();
+        while (!(input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit")));
+        tryClose(server);
+    }
+
+    private static void tryClose(Server server) {
+        if (server != null && !server.isClosed())
+            try {
+                server.close();
+                System.out.println("\nServer closed");
+            } catch (IOException e) {
+                System.err.println("\nError closing server: " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
     }
 }
