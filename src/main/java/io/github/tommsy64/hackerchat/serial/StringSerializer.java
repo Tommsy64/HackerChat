@@ -1,4 +1,4 @@
-package io.github.tommsy64.hackerchat;
+package io.github.tommsy64.hackerchat.serial;
 
 public class StringSerializer implements Serializer<String> {
     @Override

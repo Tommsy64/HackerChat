@@ -1,8 +1,9 @@
 package io.github.tommsy64.hackerchat;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -12,6 +13,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.github.tommsy64.hackerchat.arguments.ServerArguments;
+import io.github.tommsy64.hackerchat.serial.EncryptionSerializer;
+import io.github.tommsy64.hackerchat.serial.Serializer;
+import io.github.tommsy64.hackerchat.serial.StringSerializer;
+import io.github.tommsy64.hackerchat.util.Encryptor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,7 +53,6 @@ public class Server extends Thread {
         try {
             while (!isClosed()) {
                 new UserHandler(server.accept()).start();
-                ;
                 System.out.println("Accepted new connection. (" + userHandlers.size() + " total)");
             }
         } catch (SocketException e) {
@@ -77,38 +81,45 @@ public class Server extends Thread {
     private class UserHandler extends Thread {
 
         private final Socket socket;
-        private final InputStream input;
-        private final OutputStream output;
+        private final BufferedReader input;
+        private final PrintWriter output;
 
         @Getter
         private volatile String username;
 
         private UserHandler(Socket socket) throws IOException {
             this.socket = socket;
-            this.input = socket.getInputStream();
-            this.output = socket.getOutputStream();
+            this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.output = new PrintWriter(socket.getOutputStream(), true);
             userHandlers.add(this);
         }
 
         public void run() {
             try {
-                // username = kryo.readObject(input, String.class, serializer);
+                while (true) {
+                    output.println(serializer.serialize("Username: "));
+                    username = serializer.deserialize(input.readLine());
+                    if (username == null || username.isEmpty())
+                        continue;
+                    output.print(serializer.serialize("Username set to " + username + "\n"));
+                    break;
+                }
 
                 while (!isClosed() && !this.socket.isClosed()) {
-                    final String sendData = serializer.deserialize(StreamHelper.readString(input));
-                    if (sendData == null)
-                        continue;
+                    String recived = serializer.deserialize(input.readLine());
+                    if (recived == null)
+                        break;
+                    String sendData = new StringBuilder().append(username).append(": ").append(recived).append("\n").toString();
                     if (log)
-                        System.out.println(sendData);
+                        System.out.print(sendData);
                     synchronized (userHandlers) {
                         Iterator<UserHandler> i = userHandlers.iterator(); // Must be in synchronized block
-                        while (i.hasNext())
-                            try {
-                                StreamHelper.writeString(i.next().getOutput(), serializer.serialize(sendData));
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
+                        while (i.hasNext()) {
+                            UserHandler uh = i.next();
+                            if (uh == this)
+                                continue;
+                            uh.getOutput().println(serializer.serialize(sendData));
+                        }
                     }
                 }
             } catch (SocketException e) {
@@ -124,10 +135,12 @@ public class Server extends Thread {
                 int i = userHandlers.indexOf(this);
                 if (i >= 0)
                     userHandlers.remove(i);
+                if (log)
+                    System.out.println(username + " disconnected.");
             }
         }
 
-        public synchronized OutputStream getOutput() {
+        public synchronized PrintWriter getOutput() {
             return this.output;
         }
 

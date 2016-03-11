@@ -4,11 +4,11 @@
 
 	<groupId>io.github.tommsy64</groupId>
 	<artifactId>hackerchat</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>Netchat</name>
-	<url>https://github.com/Tommsy64/hackerch</url>
+	<name>Hackerchat</name>
+	<url>https://github.com/Tommsy64/hackerchat</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -117,5 +117,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<description>Console chat.</description>
+	<description>Simple console chat room server and client.</description>
 </project>

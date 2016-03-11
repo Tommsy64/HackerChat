@@ -1,4 +1,4 @@
-package io.github.tommsy64.hackerchat;
+package io.github.tommsy64.hackerchat.serial;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -8,6 +8,8 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import io.github.tommsy64.hackerchat.util.Encryptor;
 
 public class EncryptionSerializer implements Serializer<String> {
 

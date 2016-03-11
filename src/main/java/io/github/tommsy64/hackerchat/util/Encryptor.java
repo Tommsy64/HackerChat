@@ -1,4 +1,4 @@
-package io.github.tommsy64.hackerchat;
+package io.github.tommsy64.hackerchat.util;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;

@@ -6,13 +6,13 @@ import java.util.Scanner;
 import com.beust.jcommander.JCommander;
 
 import io.github.tommsy64.hackerchat.arguments.ClientArguments;
-import io.github.tommsy64.hackerchat.arguments.NetchatArguments;
+import io.github.tommsy64.hackerchat.arguments.HackerchatArguments;
 import io.github.tommsy64.hackerchat.arguments.ServerArguments;
 import lombok.Cleanup;
 
 public class Hackerchat {
     public static void main(String[] args) {
-        NetchatArguments mainArgs = new NetchatArguments();
+        HackerchatArguments mainArgs = new HackerchatArguments();
         ClientArguments clientArgs = new ClientArguments();
         ServerArguments serverArgs = new ServerArguments();
         JCommander jc = new JCommander(mainArgs);
@@ -23,7 +23,7 @@ public class Hackerchat {
             if (mainArgs.isHelp() || args.length == 0)
                 jc.usage();
             else if (mainArgs.isVersion())
-                System.out.println("Hackerchat by version ${ project.version } Tommsy64");
+                System.out.println("Hackerchat (" + mainArgs.getVersionString() + ") by Tommsy64");
             return;
         }
 
