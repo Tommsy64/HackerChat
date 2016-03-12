@@ -58,6 +58,7 @@ public class Hackerchat {
     private static void server(final Server server) {
         server.setName("server");
         Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
             public void run() {
                 tryClose(server);
             }

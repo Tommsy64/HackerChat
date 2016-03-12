@@ -45,6 +45,7 @@ public class Client extends Thread {
         this.out = new PrintWriter(socket.getOutputStream(), true);
     }
 
+    @Override
     public void run() {
         try {
             String message;
@@ -75,14 +76,13 @@ public class Client extends Thread {
         super.start();
         final BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
         String input;
-        outer:
-        while (this.isAlive() && !socket.isClosed()) {
+        outer: while (this.isAlive() && !socket.isClosed()) {
             try {
                 while (!console.ready())
                     if (socket.isClosed())
                         break outer;
                     else
-                    Thread.sleep(10);
+                        Thread.sleep(10);
                 input = console.readLine();
                 if (input.toLowerCase().startsWith("..q") || input.equalsIgnoreCase("..exit"))
                     Client.this.socket.close();
