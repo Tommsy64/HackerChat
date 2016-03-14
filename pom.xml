@@ -7,8 +7,8 @@
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>Hackerchat</name>
-	<url>https://github.com/Tommsy64/hackerchat</url>
+	<name>HackerChat</name>
+	<url>https://github.com/Tommsy64/HackerChat-Console</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
